@@ -6,19 +6,18 @@ import { dbConnect } from "./utils/dbConnect"
 import { models } from "./models"
 
 
-import { IN_PROD } from "./config";
+import { IN_PROD, CLIENT_ADDR, CLIENT_PORT } from "./config";
+import { addUser } from "./utils/addUser";
 
 (() => {
   const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './typeDefs')))
   const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './resolvers')))
 
   const server = new ApolloServer({
-/*
     cors: {
-      origin: `${REACT_CLIENT_ADDRESS}:${REACT_CLIENT_PORT}`,
+      origin: `http://${CLIENT_ADDR}:${CLIENT_PORT}`,
       credentials: true,
     },
-*/
     typeDefs,
     resolvers,
     schemaDirectives,
@@ -28,11 +27,11 @@ import { IN_PROD } from "./config";
       }
     },
     context: async ({ req }) => {
-      // const user = await addUser(req) || ''
+      const user = await addUser(req) || ''
       return {
         req,
         models,
-        // user,
+        user: user,
       }
     }
   })

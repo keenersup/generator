@@ -25,8 +25,12 @@ export const dbConnect = () => {
   connect()
   const db = mongoose.connection
 
-  db.on('error', console.error.bind(console, 'DB error: ')
-  )
+  db.on('error', () => {
+    console.error.bind(console, 'DB error: ')
+    setInterval(() => {
+      connect()
+    }, 5000)
+  })
   db.once('open', () => {
     console.log('    DB connect');
   })
